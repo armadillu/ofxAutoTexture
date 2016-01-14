@@ -48,8 +48,7 @@ void ofxAutoTexture::_update(ofEventArgs &e) {
 				}
 
 				//mipmap
-				bool needsMipMap = getTextureData().minFilter == GL_LINEAR_MIPMAP_LINEAR; //this is an ugly guess...
-																							//todo OF should allow me to query a texture for its mipmap existance
+				bool needsMipMap = hasMipmap();
 				loaded = ofLoadImage(*this, filePath);
 				if(needsMipMap) generateMipmap();
 
