@@ -19,7 +19,7 @@ ofxAutoTexture::ofxAutoTexture() {
 
 ofxAutoTexture::~ofxAutoTexture() {
 	#if !defined(DISABLE_TEXTURE_AUTOLOAD)
-	ofRemoveListener(ofEvents().update, this, &ofxAutoTexture::_update);
+	ofRemoveListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
 	#endif
 }
 

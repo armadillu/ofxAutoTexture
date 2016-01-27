@@ -20,7 +20,7 @@ class ofxAutoTexture : public ofTexture{
 public:
 	
 	ofxAutoTexture();
-	 ~ofxAutoTexture();
+	virtual  ~ofxAutoTexture();
 
 	void loadFromFile(string filePath);
 
