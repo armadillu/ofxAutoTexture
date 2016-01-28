@@ -11,31 +11,32 @@
 
 #include "ofMain.h"
 
-
 // add DISABLE_TEXTURE_AUTOLOAD to your project pre-processor macros
 // to disable the auto-reloading entirely
 
-class ofxAutoTexture : public ofTexture{
+class ofxAutoTexture : public ofTexture {
 
-public:
-	
+  public:
 	ofxAutoTexture();
-	virtual  ~ofxAutoTexture();
+	virtual ~ofxAutoTexture();
 
-	void loadFromFile(string filePath);
+	bool loadFromFile(const string &filePath);
 
-protected:
+	// to be used on PSDs to fix white halos
+	static void removeWhiteMatte(ofPixels &pixels);
 
+  protected:
 	void _update(ofEventArgs &e);
-	std::time_t getLastModified( string path );
+	std::time_t getLastModified(const string &filePath);
+
+	bool _loadFromFile(const string &filePath);
 
 	bool loaded;
 	std::time_t lastModified;
 	float lastCheckTime;
 	string filePath;
 
-	const float textureFileCheckInterval = 0.5; //seconds
-
+	const float textureFileCheckInterval = 1.0; // seconds
 };
 
 #endif /* defined(__BaseApp__ofxAutoTexture__) */
