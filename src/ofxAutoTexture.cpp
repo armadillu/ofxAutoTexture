@@ -13,6 +13,7 @@ ofxAutoTexture::ofxAutoTexture() {
 	loaded = false;
 	lastCheckTime = 0.0f;
 	ofAddListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
+	nextCheckInterval = textureFileCheckInterval + ofRandom(0.2);
 #endif
 }
 
@@ -26,8 +27,9 @@ void ofxAutoTexture::_update(ofEventArgs &e) {
 
 	if(loaded) {
 		float timeNow = ofGetElapsedTimef();
-		if(timeNow - lastCheckTime > textureFileCheckInterval) { // time to check again
+		if(timeNow - lastCheckTime > nextCheckInterval) { // time to check again
 
+			nextCheckInterval = textureFileCheckInterval + ofRandom(0.2);
 			lastCheckTime = ofGetElapsedTimef();
 			std::time_t modif = getLastModified(filePath);
 

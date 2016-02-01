@@ -34,9 +34,10 @@ class ofxAutoTexture : public ofTexture {
 	bool loaded;
 	std::time_t lastModified;
 	float lastCheckTime;
+	float nextCheckInterval;
 	string filePath;
 
-	const float textureFileCheckInterval = 1.0; // seconds
+	const float textureFileCheckInterval = 0.8; // seconds
 };
 
 #endif /* defined(__BaseApp__ofxAutoTexture__) */
