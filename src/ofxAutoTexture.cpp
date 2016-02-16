@@ -120,18 +120,16 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels) {
 
 	int total = pixels.getWidth() * pixels.getHeight();
+	unsigned char * data = pixels.getData();
 	for(int i = 0; i < total; ++i) {
 		const int k = i * 4;
-		const unsigned char a = pixels.getData()[k + 3];
+		const unsigned char a = data[k + 3];
 		if(a) {
 			const float na = a / 255.0f; // normalized alpha
 			const float ina = 1.0f - na; // inverse normalized alpha
-			const unsigned char r = pixels.getData()[k + 0];
-			const unsigned char g = pixels.getData()[k + 1];
-			const unsigned char b = pixels.getData()[k + 2];
-			pixels.getData()[k + 0] = (r - 255.0f * ina) / na;
-			pixels.getData()[k + 1] = (g - 255.0f * ina) / na;
-			pixels.getData()[k + 2] = (b - 255.0f * ina) / na;
+			data[k    ] = (data[k    ] - 255.0f * ina) / na;
+			data[k + 1] = (data[k + 1] - 255.0f * ina) / na;
+			data[k + 2] = (data[k + 2] - 255.0f * ina) / na;
 		}
 	}
 }
