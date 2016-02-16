@@ -14,6 +14,7 @@ ofxAutoTexture::ofxAutoTexture() {
 	lastCheckTime = 0.0f;
 	ofAddListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
 	nextCheckInterval = textureFileCheckInterval + ofRandom(0.2);
+	lastModified = 0;
 #endif
 }
 
@@ -30,7 +31,7 @@ void ofxAutoTexture::_update(ofEventArgs &e) {
 		if(timeNow - lastCheckTime > nextCheckInterval) { // time to check again
 
 			nextCheckInterval = textureFileCheckInterval + ofRandom(0.2);
-			lastCheckTime = ofGetElapsedTimef();
+			lastCheckTime = timeNow;
 			std::time_t modif = getLastModified(filePath);
 
 			if(lastModified != modif) { // file has been modified!
@@ -84,6 +85,11 @@ bool ofxAutoTexture::loadFromFile(const string &filePath) {
 
 	this->filePath = ofToDataPath(filePath, true);
 	loaded = _loadFromFile(filePath);
+	if(loaded){
+		lastModified = getLastModified(this->filePath);
+	}else{
+		ofLogError("ofxAutoTexture") << "Cant load tex from file '" << this->filePath << "'";
+	}
 	return loaded;
 }
 
