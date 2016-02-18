@@ -99,7 +99,9 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 	bool loaded_ = ofLoadImage(pixels, filePath); // load file to pixels
 	if(loaded_) {
 		// alloc texture space
-		allocate(pixels.getWidth(), pixels.getHeight(), ofGetGlInternalFormat(pixels));
+		if(getWidth() != pixels.getWidth() || getHeight() != pixels.getHeight()){
+			allocate(pixels.getWidth(), pixels.getHeight(), ofGetGlInternalFormat(pixels), ofGetUsingArbTex());
+		}
 
 		// see if we need post-processing
 		string type = ofFilePath::getFileExt(filePath);
