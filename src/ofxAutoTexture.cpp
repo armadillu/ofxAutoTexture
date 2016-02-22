@@ -15,6 +15,7 @@ ofxAutoTexture::ofxAutoTexture() {
 	ofAddListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
 	nextCheckInterval = textureFileCheckInterval + ofRandom(0.2);
 	lastModified = 0;
+	nChannels = 0;
 #endif
 }
 
@@ -98,8 +99,9 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 	ofPixels pixels;
 	bool loaded_ = ofLoadImage(pixels, filePath); // load file to pixels
 	if(loaded_) {
+		int nChan = pixels.getNumChannels();
 		// alloc texture space
-		if(getWidth() != pixels.getWidth() || getHeight() != pixels.getHeight()){
+		if(getWidth() != pixels.getWidth() || getHeight() != pixels.getHeight() || nChan != nChannels){
 			allocate(pixels.getWidth(), pixels.getHeight(), ofGetGlInternalFormat(pixels), ofGetUsingArbTex());
 		}
 
@@ -113,6 +115,7 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 
 		// copy pixel data to texture data
 		ofTexture::loadData(pixels);
+		nChannels = nChan;
 	} else {
 		ofLogError("ofxAutoTexture") << "Can't load file at '" << this->filePath << "'";
 	}
@@ -121,17 +124,20 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 
 void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels) {
 
-	int total = pixels.getWidth() * pixels.getHeight();
-	unsigned char * data = pixels.getData();
-	for(int i = 0; i < total; ++i) {
-		const int k = i * 4;
-		const unsigned char a = data[k + 3];
-		if(a) {
-			const float na = a / 255.0f; // normalized alpha
-			const float ina = 1.0f - na; // inverse normalized alpha
-			data[k    ] = (data[k    ] - 255.0f * ina) / na;
-			data[k + 1] = (data[k + 1] - 255.0f * ina) / na;
-			data[k + 2] = (data[k + 2] - 255.0f * ina) / na;
+	int nChan = pixels.getNumChannels();
+	if(pixels.getNumChannels() == 4){
+		int total = pixels.getWidth() * pixels.getHeight();
+		unsigned char * data = pixels.getData();
+		for(int i = 0; i < total; ++i) {
+			const int k = i * 4;
+			const unsigned char a = data[k + 3];
+			if(a) {
+				const float na = a / 255.0f; // normalized alpha
+				const float ina = 1.0f - na; // inverse normalized alpha
+				data[k    ] = (data[k    ] - 255.0f * ina) / na;
+				data[k + 1] = (data[k + 1] - 255.0f * ina) / na;
+				data[k + 2] = (data[k + 2] - 255.0f * ina) / na;
+			}
 		}
 	}
 }

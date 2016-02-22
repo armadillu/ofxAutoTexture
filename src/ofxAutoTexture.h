@@ -36,6 +36,7 @@ class ofxAutoTexture : public ofTexture {
 	float lastCheckTime;
 	float nextCheckInterval;
 	string filePath;
+	int nChannels;
 
 	const float textureFileCheckInterval = 0.8; // seconds
 };
