@@ -111,6 +111,8 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 			ofLogNotice("ofxAutoTexture") << "Loading PSD file - removing white matte from file at '" << this->filePath
 										  << "'";
 			removeWhiteMatte(pixels);
+		}else{
+			makeTransparentPixelsBlack(pixels);
 		}
 
 		// copy pixel data to texture data
@@ -122,11 +124,11 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 	return loaded_;
 }
 
-void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels) {
+void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels, bool makeTransparentPixelsBlack) {
 
-	int nChan = pixels.getNumChannels();
+	const int nChan = pixels.getNumChannels();
 	if(pixels.getNumChannels() == 4){
-		int total = pixels.getWidth() * pixels.getHeight();
+		const int total = pixels.getWidth() * pixels.getHeight();
 		unsigned char * data = pixels.getData();
 		for(int i = 0; i < total; ++i) {
 			const int k = i * 4;
@@ -137,6 +139,31 @@ void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels) {
 				data[k    ] = (data[k    ] - 255.0f * ina) / na;
 				data[k + 1] = (data[k + 1] - 255.0f * ina) / na;
 				data[k + 2] = (data[k + 2] - 255.0f * ina) / na;
+			}else{
+				if(makeTransparentPixelsBlack){
+					data[k    ] = 0;
+					data[k + 1] = 0;
+					data[k + 2] = 0;
+				}
+			}
+		}
+	}
+}
+
+
+void ofxAutoTexture::makeTransparentPixelsBlack(ofPixels &pixels){
+
+	const int nChan = pixels.getNumChannels();
+	if(pixels.getNumChannels() == 4){
+		const int total = pixels.getWidth() * pixels.getHeight();
+		unsigned char * data = pixels.getData();
+		for(int i = 0; i < total; ++i) {
+			const int k = i * 4;
+			const unsigned char a = data[k + 3];
+			if(a == 0) { //pixels with 0 alpha showuld be pure black
+				data[k    ] = 0;
+				data[k + 1] = 0;
+				data[k + 2] = 0;
 			}
 		}
 	}
