@@ -127,7 +127,7 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels, bool makeTransparentPixelsBlack) {
 
 	const int nChan = pixels.getNumChannels();
-	if(pixels.getNumChannels() == 4){
+	if(nChan == 4){
 		const int total = pixels.getWidth() * pixels.getHeight();
 		unsigned char * data = pixels.getData();
 		for(int i = 0; i < total; ++i) {
@@ -154,7 +154,7 @@ void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels, bool makeTransparentPixe
 void ofxAutoTexture::makeTransparentPixelsBlack(ofPixels &pixels){
 
 	const int nChan = pixels.getNumChannels();
-	if(pixels.getNumChannels() == 4){
+	if(nChan == 4){
 		const int total = pixels.getWidth() * pixels.getHeight();
 		unsigned char * data = pixels.getData();
 		for(int i = 0; i < total; ++i) {
