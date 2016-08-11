@@ -21,7 +21,8 @@ class ofxAutoTexture : public ofTexture {
 	virtual ~ofxAutoTexture();
 
 	bool loadFromFile(const string &filePath);
-
+	string getFilePath(){return filePath;}
+	
 	// to be used on PSDs to fix white halos
 	static void removeWhiteMatte(ofPixels &pixels, bool makeTransparentPixelsBlack = true);
 	static void makeTransparentPixelsBlack(ofPixels &pixels);
