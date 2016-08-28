@@ -108,9 +108,10 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 		// see if we need post-processing
 		string type = ofFilePath::getFileExt(filePath);
 		if(ofToLower(type) == "psd") { // psd's get a special treatment - remove white halo
-			ofLogNotice("ofxAutoTexture") << "Loading PSD file - removing white matte from file at '" << this->filePath
-										  << "'";
-			removeWhiteMatte(pixels);
+			if(pixels.getNumChannels() == 4){
+				ofLogNotice("ofxAutoTexture") << "Loading PSD file - removing white matte from file at '" << this->filePath << "'";
+				removeWhiteMatte(pixels);
+			}
 		}else{
 			makeTransparentPixelsBlack(pixels);
 		}
