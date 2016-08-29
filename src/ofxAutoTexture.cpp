@@ -88,6 +88,7 @@ bool ofxAutoTexture::loadFromFile(const string &filePath) {
 	loaded = _loadFromFile(filePath);
 	if(loaded){
 		lastModified = getLastModified(this->filePath);
+		ofLogNotice("ofxAutoTexture") << "loadFromFile(\"" << this->filePath << "\")";
 	}else{
 		ofLogError("ofxAutoTexture") << "Cant load tex from file '" << this->filePath << "'";
 	}
