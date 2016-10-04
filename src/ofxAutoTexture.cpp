@@ -25,6 +25,27 @@ ofxAutoTexture::~ofxAutoTexture() {
 #endif
 }
 
+bool ofxAutoTexture::preloadPixelsFromFile(const string &filePath){
+	this->filePath = filePath;
+	pixelsPreloaded = false;
+	preloadingPixels = true;
+	bool loaded_ = ofLoadImage(preloadedPixels, filePath); // load file to pixels
+	if(!loaded_){
+		ofLogError("ofxAutoTexture") << "failed to preload pixels from: " << filePath;
+	}
+	pixelsPreloaded = true;
+	preloadingPixels = false;
+}
+
+bool ofxAutoTexture::arePixelPreLoaded(){
+	return preloadedPixels.isAllocated();
+}
+
+
+bool ofxAutoTexture::isPreloadingPixels(){
+	return preloadingPixels && !pixelsPreloaded;
+}
+
 void ofxAutoTexture::_update(ofEventArgs &e) {
 
 	if(loaded) {
@@ -98,7 +119,15 @@ bool ofxAutoTexture::loadFromFile(const string &filePath) {
 bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 
 	ofPixels pixels;
-	bool loaded_ = ofLoadImage(pixels, filePath); // load file to pixels
+	bool loaded_;
+	if(preloadedPixels.isAllocated()){
+		loaded_ = true;
+		pixels = preloadedPixels;
+		preloadedPixels.clear();
+	}else{
+		loaded_ = ofLoadImage(pixels, filePath); // load file to pixels
+	}
+	
 	if(loaded_) {
 		int nChan = pixels.getNumChannels();
 		// alloc texture space
@@ -130,10 +159,10 @@ void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels, bool makeTransparentPixe
 
 	const int nChan = pixels.getNumChannels();
 	if(nChan == 4){
-		const int total = pixels.getWidth() * pixels.getHeight();
+		const size_t total = pixels.getWidth() * pixels.getHeight();
 		unsigned char * data = pixels.getData();
-		for(int i = 0; i < total; ++i) {
-			const int k = i * 4;
+		for(size_t i = 0; i < total; ++i) {
+			const size_t k = i * 4;
 			const unsigned char a = data[k + 3];
 			if(a) {
 				const float na = a / 255.0f; // normalized alpha
@@ -157,12 +186,12 @@ void ofxAutoTexture::makeTransparentPixelsBlack(ofPixels &pixels){
 
 	const int nChan = pixels.getNumChannels();
 	if(nChan == 4){
-		const int total = pixels.getWidth() * pixels.getHeight();
+		const size_t total = pixels.getWidth() * pixels.getHeight();
 		unsigned char * data = pixels.getData();
-		for(int i = 0; i < total; ++i) {
-			const int k = i * 4;
+		for(size_t i = 0; i < total; ++i) {
+			const size_t k = i * 4;
 			const unsigned char a = data[k + 3];
-			if(a == 0) { //pixels with 0 alpha showuld be pure black
+			if(a == 0) { //pixels with 0 alpha showuld be pure black to avoid weird mipmaps artifacts
 				data[k    ] = 0;
 				data[k + 1] = 0;
 				data[k + 2] = 0;

@@ -20,6 +20,10 @@ class ofxAutoTexture : public ofTexture {
 	ofxAutoTexture();
 	virtual ~ofxAutoTexture();
 
+	bool preloadPixelsFromFile(const string &filePath); //use this to parallel load several ofxAutoTexture from threads
+	bool arePixelPreLoaded(); //will b e true when pixels are loaded.
+	bool isPreloadingPixels();
+	
 	bool loadFromFile(const string &filePath);
 	string getFilePath(){return filePath;}
 	
@@ -41,6 +45,10 @@ class ofxAutoTexture : public ofTexture {
 	int nChannels;
 
 	const float textureFileCheckInterval = 0.8; // seconds
+	
+	bool preloadingPixels = false;
+	ofPixels preloadedPixels;
+	bool pixelsPreloaded = false;;
 };
 
 #endif /* defined(__BaseApp__ofxAutoTexture__) */
