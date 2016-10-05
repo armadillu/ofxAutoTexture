@@ -35,6 +35,7 @@ bool ofxAutoTexture::preloadPixelsFromFile(const string &filePath){
 	}
 	pixelsPreloaded = true;
 	preloadingPixels = false;
+	return loaded_;
 }
 
 bool ofxAutoTexture::arePixelPreLoaded(){
