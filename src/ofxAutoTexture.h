@@ -30,8 +30,15 @@ class ofxAutoTexture : public ofTexture {
 	// to be used on PSDs to fix white halos
 	static void removeWhiteMatte(ofPixels &pixels, bool makeTransparentPixelsBlack = true);
 	static void makeTransparentPixelsBlack(ofPixels &pixels);
+	static float memUse(ofTexture * tex); //return MBytes float
+
+	//mem use stats
+//	static float getCurrentlyLoadedMBytes(); //what's loaded right now
+	static float getTotalLoadedMBytes(); //over app time
+
 
   protected:
+
 	void _update(ofEventArgs &e);
 	std::time_t getLastModified(const string &filePath);
 
@@ -48,7 +55,10 @@ class ofxAutoTexture : public ofTexture {
 	
 	bool preloadingPixels = false;
 	ofPixels preloadedPixels;
-	bool pixelsPreloaded = false;;
+	bool pixelsPreloaded = false;
+
+	static float totalLoadedMbytes;
+	static float currentlyLoadedMBytes;
 };
 
 #endif /* defined(__BaseApp__ofxAutoTexture__) */

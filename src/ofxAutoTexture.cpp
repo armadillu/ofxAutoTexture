@@ -8,6 +8,9 @@
 
 #include "ofxAutoTexture.h"
 
+float ofxAutoTexture::totalLoadedMbytes = 0.0f;
+float ofxAutoTexture::currentlyLoadedMBytes = 0.0f;
+
 ofxAutoTexture::ofxAutoTexture() {
 #if !defined(DISABLE_TEXTURE_AUTOLOAD)
 	loaded = false;
@@ -149,6 +152,10 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 
 		// copy pixel data to texture data
 		ofTexture::loadData(pixels);
+		float memUsed = memUse(this);
+		totalLoadedMbytes += memUsed;
+		currentlyLoadedMBytes += memUsed;
+		
 		nChannels = nChan;
 	} else {
 		ofLogError("ofxAutoTexture") << "Can't load file at '" << this->filePath << "'";
@@ -180,6 +187,37 @@ void ofxAutoTexture::removeWhiteMatte(ofPixels &pixels, bool makeTransparentPixe
 			}
 		}
 	}
+}
+
+float ofxAutoTexture::memUse(ofTexture * tex) {
+
+	if (tex && tex->isAllocated()) {
+		int w, h;
+		if (tex->texData.textureTarget == GL_TEXTURE_RECTANGLE_ARB) {
+			w = ofNextPow2(tex->getWidth());
+			h = ofNextPow2(tex->getHeight());
+		} else {
+			w = tex->getWidth();
+			h = tex->getHeight();
+		}
+
+		int numC = ofGetNumChannelsFromGLFormat(ofGetGLFormatFromInternal(tex->texData.glInternalFormat));
+		float mem = w * h * numC;
+		if (tex->hasMipmap()) {
+			mem *= 1.3333; //mipmaps take 33% more memory
+		}
+		return mem / float(1024 * 1024); //return MBytes
+	}
+	return 0;
+}
+
+/*
+float ofxAutoTexture::getCurrentlyLoadedMBytes(){
+	
+}*/
+
+float ofxAutoTexture::getTotalLoadedMBytes(){
+	return totalLoadedMbytes;
 }
 
 
