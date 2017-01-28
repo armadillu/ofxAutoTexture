@@ -6,8 +6,7 @@
 //
 //
 
-#ifndef __BaseApp__ofxAutoTexture__
-#define __BaseApp__ofxAutoTexture__
+#pragma once
 
 #include "ofMain.h"
 
@@ -60,5 +59,3 @@ class ofxAutoTexture : public ofTexture {
 	static float totalLoadedMbytes;
 	static float currentlyLoadedMBytes;
 };
-
-#endif /* defined(__BaseApp__ofxAutoTexture__) */
