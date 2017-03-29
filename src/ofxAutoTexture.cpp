@@ -65,7 +65,8 @@ void ofxAutoTexture::_update(ofEventArgs &e) {
 				lastModified = modif;
 
 				// ARB
-				bool arbState = ofGetUsingArbTex;
+				#ifndef TARGET_OPENGLES
+				bool arbState = ofGetUsingArbTex();
 				bool ourTexIsArb = getTextureData().textureTarget == GL_TEXTURE_RECTANGLE_ARB;
 				if(ourTexIsArb != arbState) {
 					if(GL_TEXTURE_RECTANGLE_ARB == getTextureData().textureTarget) {
@@ -74,6 +75,10 @@ void ofxAutoTexture::_update(ofEventArgs &e) {
 						ofDisableArbTex();
 					}
 				}
+				#else
+				bool arbState = false;
+				bool ourTexIsArb = false;
+				#endif
 
 				// mipmap
 				bool needsMipMap = hasMipmap();
@@ -193,6 +198,7 @@ float ofxAutoTexture::memUse(ofTexture * tex) {
 
 	if (tex && tex->isAllocated()) {
 		int w, h;
+		#ifndef TARGET_OPENGLES
 		if (tex->texData.textureTarget == GL_TEXTURE_RECTANGLE_ARB) {
 			w = ofNextPow2(tex->getWidth());
 			h = ofNextPow2(tex->getHeight());
@@ -200,6 +206,11 @@ float ofxAutoTexture::memUse(ofTexture * tex) {
 			w = tex->getWidth();
 			h = tex->getHeight();
 		}
+		#else
+		w = tex->getWidth();
+		h = tex->getHeight();
+		#endif
+
 
 		int numC = ofGetNumChannelsFromGLFormat(ofGetGLFormatFromInternal(tex->texData.glInternalFormat));
 		float mem = w * h * numC;
