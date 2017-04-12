@@ -152,7 +152,25 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 				removeWhiteMatte(pixels);
 			}
 		}else{
-			makeTransparentPixelsBlack(pixels);
+			makeTransparentPixelsThisColor(pixels, ofColor::black);
+		}
+
+		//support for overriding the RGB value of fully transparent pixels; user can name the file "xxx_transpFFFFFF.png"
+		// where FFFFFF is an hex RGB value for the transparent pixels to be painted with
+		string fileName = ofFilePath::getBaseName(filePath);
+		if(ofIsStringInString(fileName, paintTransaprentPiexelsCommand)){ //if file contains "_transpWhite"
+			auto strings = ofSplitString(fileName, paintTransaprentPiexelsCommand);
+			if (strings.size() > 1){
+				string hexStr = strings.back();
+				if(hexStr.size() == 6){
+					int hex = ofHexToInt(hexStr);
+					int r = (hex >> 16) & 0xff;
+					int g = (hex >> 8) & 0xff;
+					int b = (hex >> 0) & 0xff;
+					//process al a==0 pixels into user supplied RGB (mostly useful for mipmaps)
+					makeTransparentPixelsThisColor(pixels, ofColor(r,g,b));
+				}
+			}
 		}
 
 		// copy pixel data to texture data
@@ -232,7 +250,7 @@ float ofxAutoTexture::getTotalLoadedMBytes(){
 }
 
 
-void ofxAutoTexture::makeTransparentPixelsBlack(ofPixels &pixels){
+void ofxAutoTexture::makeTransparentPixelsThisColor(ofPixels &pixels, const ofColor & color){
 
 	const int nChan = pixels.getNumChannels();
 	if(nChan == 4){
@@ -242,9 +260,9 @@ void ofxAutoTexture::makeTransparentPixelsBlack(ofPixels &pixels){
 			const size_t k = i * 4;
 			const unsigned char a = data[k + 3];
 			if(a == 0) { //pixels with 0 alpha showuld be pure black to avoid weird mipmaps artifacts
-				data[k    ] = 0;
-				data[k + 1] = 0;
-				data[k + 2] = 0;
+				data[k    ] = color.r;
+				data[k + 1] = color.g;
+				data[k + 2] = color.b;
 			}
 		}
 	}
