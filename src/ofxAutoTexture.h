@@ -41,6 +41,7 @@ class ofxAutoTexture : public ofTexture {
 //	static float getCurrentlyLoadedMBytes(); //what's loaded right now
 	static float getTotalLoadedMBytes(); //over app time
 
+	ofEvent<ofxAutoTexture> eventTextureReloaded;
 
   protected:
 

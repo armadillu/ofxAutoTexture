@@ -180,6 +180,8 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 		currentlyLoadedMBytes += memUsed;
 		
 		nChannels = nChan;
+
+		ofNotifyEvent(eventTextureReloaded, *this);
 	} else {
 		ofLogError("ofxAutoTexture") << "Can't load file at '" << this->filePath << "'";
 	}
