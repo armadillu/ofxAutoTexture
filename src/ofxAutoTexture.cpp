@@ -12,14 +12,14 @@ float ofxAutoTexture::totalLoadedMbytes = 0.0f;
 float ofxAutoTexture::currentlyLoadedMBytes = 0.0f;
 
 ofxAutoTexture::ofxAutoTexture() {
-#if !defined(DISABLE_TEXTURE_AUTOLOAD)
 	loaded = false;
 	lastCheckTime = 0.0f;
+	#if !defined(DISABLE_TEXTURE_AUTOLOAD)
 	ofAddListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
+	#endif
 	nextCheckInterval = textureFileCheckInterval + ofRandom(0.2);
 	lastModified = 0;
 	nChannels = 0;
-#endif
 }
 
 ofxAutoTexture::~ofxAutoTexture() {
