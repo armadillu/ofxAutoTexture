@@ -52,7 +52,7 @@ bool ofxAutoTexture::isPreloadingPixels(){
 
 void ofxAutoTexture::_update(ofEventArgs &e) {
 
-	if(loaded) {
+	if(loaded || liveLoadError) {
 		float timeNow = ofGetElapsedTimef();
 		if(timeNow - lastCheckTime > nextCheckInterval) { // time to check again
 
@@ -84,6 +84,7 @@ void ofxAutoTexture::_update(ofEventArgs &e) {
 				bool needsMipMap = hasMipmap();
 				loaded = _loadFromFile(filePath);
 				if(loaded) {
+					liveLoadError = false;
 					if(needsMipMap)
 						generateMipmap();
 
@@ -97,6 +98,7 @@ void ofxAutoTexture::_update(ofEventArgs &e) {
 
 					ofLogNotice("ofxAutoTexture") << "reloading texture at " << filePath;
 				} else {
+					liveLoadError = true;
 					ofLogError("ofxAutoTexture") << "failed to reload texture at " << filePath;
 				}
 			}

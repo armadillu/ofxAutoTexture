@@ -51,6 +51,7 @@ class ofxAutoTexture : public ofTexture {
 	bool _loadFromFile(const string &filePath);
 
 	bool loaded;
+	bool liveLoadError = false;
 	std::time_t lastModified;
 	float lastCheckTime;
 	float nextCheckInterval;
