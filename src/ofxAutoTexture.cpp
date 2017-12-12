@@ -160,8 +160,8 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 		//support for overriding the RGB value of fully transparent pixels; user can name the file "xxx_transpFFFFFF.png"
 		// where FFFFFF is an hex RGB value for the transparent pixels to be painted with
 		string fileName = ofFilePath::getBaseName(filePath);
-		if(ofIsStringInString(fileName, paintTransaprentPiexelsCommand)){ //if file contains "_transpWhite"
-			auto strings = ofSplitString(fileName, paintTransaprentPiexelsCommand);
+		if(ofIsStringInString(fileName, paintTransparentPixelsCommand)){ //if file contains "_transpWhite"
+			auto strings = ofSplitString(fileName, paintTransparentPixelsCommand);
 			if (strings.size() > 1){
 				string hexStr = strings.back();
 				if(hexStr.size() == 6){
