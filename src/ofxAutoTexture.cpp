@@ -52,6 +52,8 @@ bool ofxAutoTexture::isPreloadingPixels(){
 
 void ofxAutoTexture::_update(ofEventArgs &e) {
 
+	if(dontAutoReload) return;
+
 	if(loaded || liveLoadError) {
 		float timeNow = ofGetElapsedTimef();
 		if(timeNow - lastCheckTime > nextCheckInterval) { // time to check again

@@ -41,12 +41,16 @@ class ofxAutoTexture : public ofTexture {
 //	static float getCurrentlyLoadedMBytes(); //what's loaded right now
 	static float getTotalLoadedMBytes(); //over app time
 
+	void disableAutoReload(){ dontAutoReload = true;}
+
 	ofEvent<ofxAutoTexture> eventTextureReloaded;
 
   protected:
 
 	void _update(ofEventArgs &e);
 	std::time_t getLastModified(const string &filePath);
+
+	bool dontAutoReload = false;
 
 	bool _loadFromFile(const string &filePath);
 
