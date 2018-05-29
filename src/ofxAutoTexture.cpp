@@ -166,6 +166,8 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 			auto strings = ofSplitString(fileName, paintTransparentPixelsCommand);
 			if (strings.size() > 1){
 				string hexStr = strings.back();
+				ofStringReplace(hexStr, "_mip", ""); //remove suffixes used on other commands
+				ofStringReplace(hexStr, "_t2d", ""); //remove suffixes used on other commands
 				if(hexStr.size() == 6){
 					int hex = ofHexToInt(hexStr);
 					int r = (hex >> 16) & 0xff;
@@ -173,6 +175,7 @@ bool ofxAutoTexture::_loadFromFile(const string &filePath) {
 					int b = (hex >> 0) & 0xff;
 					//process al a==0 pixels into user supplied RGB (mostly useful for mipmaps)
 					makeTransparentPixelsThisColor(pixels, ofColor(r,g,b));
+					ofLogNotice("ofxAutoTexture") << "Making transparent pixels RGB(" << r << "," << g << "," << b << ") for " << filePath;
 				}
 			}
 		}
