@@ -10,6 +10,7 @@
 
 float ofxAutoTexture::totalLoadedMbytes = 0.0f;
 float ofxAutoTexture::currentlyLoadedMBytes = 0.0f;
+string ofxAutoTexture::paintTransparentPixelsCommand = "_transp";
 
 ofxAutoTexture::ofxAutoTexture() {
 	loaded = false;

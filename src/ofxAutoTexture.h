@@ -15,13 +15,13 @@
 
 class ofxAutoTexture : public ofTexture {
 
-	const string paintTransparentPixelsCommand = "_transp";
+public:
+
+	static string paintTransparentPixelsCommand;
 	//support for overriding the RGB value of fully transparent (a==0) pixels; user can append a command
 	//to the filename name, as in: "myFile_transpFFFFFF.png"
 	// "_transp" is a keyword, and where "FFFFFF" is an hex RGB value for the transparent pixels to be painted with
 
-
-  public:
 	ofxAutoTexture();
 	virtual ~ofxAutoTexture();
 
