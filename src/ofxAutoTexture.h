@@ -41,16 +41,16 @@ public:
 //	static float getCurrentlyLoadedMBytes(); //what's loaded right now
 	static float getTotalLoadedMBytes(); //over app time
 
-	void disableAutoReload(){ dontAutoReload = true;}
 
 	ofEvent<ofxAutoTexture> eventTextureReloaded;
+
+	void disableAutoReload();
 
   protected:
 
 	void _update(ofEventArgs &e);
+	bool registeredToAutoUpdates = false;
 	std::time_t getLastModified(const string &filePath);
-
-	bool dontAutoReload = false;
 
 	bool _loadFromFile(const string &filePath);
 
@@ -70,4 +70,5 @@ public:
 
 	static float totalLoadedMbytes;
 	static float currentlyLoadedMBytes;
+	
 };

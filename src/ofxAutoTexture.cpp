@@ -17,6 +17,7 @@ ofxAutoTexture::ofxAutoTexture() {
 	lastCheckTime = 0.0f;
 	#if !defined(DISABLE_TEXTURE_AUTOLOAD)
 	ofAddListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
+	registeredToAutoUpdates = true;
 	#endif
 	nextCheckInterval = textureFileCheckInterval + ofRandom(0.2);
 	lastModified = 0;
@@ -25,7 +26,7 @@ ofxAutoTexture::ofxAutoTexture() {
 
 ofxAutoTexture::~ofxAutoTexture() {
 #if !defined(DISABLE_TEXTURE_AUTOLOAD)
-	ofRemoveListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
+	disableAutoReload();
 #endif
 }
 
@@ -51,9 +52,14 @@ bool ofxAutoTexture::isPreloadingPixels(){
 	return preloadingPixels && !pixelsPreloaded;
 }
 
+void ofxAutoTexture::disableAutoReload(){
+	if(registeredToAutoUpdates){
+		ofRemoveListener(ofEvents().update, this, &ofxAutoTexture::_update, OF_EVENT_ORDER_BEFORE_APP);
+	}
+}
+
 void ofxAutoTexture::_update(ofEventArgs &e) {
 
-	if(dontAutoReload) return;
 
 	if(loaded || liveLoadError) {
 		float timeNow = ofGetElapsedTimef();
